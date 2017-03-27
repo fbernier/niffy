@@ -27,8 +27,8 @@ static ERL_NIF_TERM return_iolist_as_binary(ErlNifEnv *env, int argc, const ERL_
 
 static ERL_NIF_TERM alloc_and_make_binary(ErlNifEnv *env, int UNUSED, const ERL_NIF_TERM *UNUSED)
 {
-    ErlNifBinary bin;
-    enif_alloc_binary(42, &bin);
+    ErlNifBinary bin = {.data = (uint8_t *)"foo", .size = 3};
+    enif_alloc_binary(3, &bin);
     return enif_make_binary(env, &bin);
 }
 

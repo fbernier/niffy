@@ -768,6 +768,8 @@ term enif_make_binary(ErlNifEnv *env, ErlNifBinary *bin)
     term *p = alloc(env, sizeof(*p) + bin->size);
     memcpy(p+1, bin->data, bin->size);
     p[0] = HEAP_BIN_TAG(bin->size);
+    if (bin->ref_bin != NULL)
+        enif_release_binary(bin);
     return box(p);
 }
 
@@ -830,6 +832,7 @@ int enif_alloc_binary(size_t size, ErlNifBinary *bin)
     if (size && NULL == bin->data)
         return 0;
     bin->size = size;
+    bin->ref_bin = &bin;
     return 1;
 }
 
@@ -840,6 +843,7 @@ int enif_realloc_binary(ErlNifBinary *bin, size_t size)
     if (size && NULL == p)
         return 0;
     bin->data = p;
+    bin->ref_bin = &bin;
     bin->size = size;
     return 1;
 }
